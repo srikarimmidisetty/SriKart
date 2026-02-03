@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sk-ui
+  namespace: dev
+  labels:
+    app: sk-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sk-ui
+  template:
+    metadata:
+      labels:
+        app: sk-ui
+    spec:
+      containers:
+        - name: sk-ui
+          image: us-central1-docker.pkg.dev/srikarcool1/srikart-repo/sk-ui:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: CATALOG_BASE_URL
+              value: "http://sk-catalog:8081"
+            - name: ORDER_BASE_URL
+              value: "http://sk-order:8082"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sk-ui
+  namespace: dev
+spec:
+  selector:
+    app: sk-ui
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+
