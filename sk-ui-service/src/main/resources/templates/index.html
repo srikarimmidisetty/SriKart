@@ -1,0 +1,48 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>SriKart</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f6f7fb; }
+    header { background: #3b2bd6; color: white; padding: 18px 24px; }
+    .wrap { max-width: 1100px; margin: 18px auto; padding: 0 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+    .card img { width: 100%; height: 160px; object-fit: cover; }
+    .card .p { padding: 14px; }
+    .badge { display: inline-block; font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #eef; color: #223; margin-bottom: 8px;}
+    .price { font-weight: bold; margin-top: 6px; }
+    form { display: flex; gap: 8px; margin-top: 10px; }
+    input { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #ddd; }
+    button { padding: 8px 12px; border: none; border-radius: 8px; background: #3b2bd6; color: white; cursor: pointer; }
+  </style>
+</head>
+<body>
+<header>
+  <h2>🚗 SriKart — Luxury Vehicles & Superbikes</h2>
+  <div>Spring Boot Microservices (Catalog + Orders + UI)</div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+    <div class="card" th:each="p : ${products}">
+      <img th:src="${p.imageUrl}" alt="vehicle"/>
+      <div class="p">
+        <div class="badge" th:text="${p.type}">CAR</div>
+        <h3 th:text="${p.brand + ' ' + p.model}">BMW M5</h3>
+        <div class="price" th:text="'$' + ${p.price}">$155000</div>
+
+        <form method="post" action="/buy">
+          <input type="hidden" name="productId" th:value="${p.id}"/>
+          <input name="customerName" placeholder="Your name" required/>
+          <button type="submit">Buy</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
